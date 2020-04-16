@@ -33,18 +33,22 @@ class ResilientRequest<S, T : Response<*>> constructor(
             try {
                 return web3jInstance.send(this, type)
             } catch (e: Exception) {
-                when (e) {
-                    is IOException, is ClientConnectionException -> {
-                        sleep(DEFAULT_RETRY_DELAY_MILLISECOND)
-                    }
-                    // This is not something that we are expecting.
-                    else -> throw e
-                }
+                handleException(e)
             }
-
         }
 
         throw ClientConnectionException("Unable to execute requested operation using any of the configured clients")
+    }
+
+    private fun handleException(e: Exception) {
+        when (e) {
+            is IOException, is ClientConnectionException -> {
+                sleep(DEFAULT_RETRY_DELAY_MILLISECOND)
+            }
+            // This is not something that we are expecting.
+            // Let the client decide what to do with this.
+            else -> throw e
+        }
     }
 
     companion object {

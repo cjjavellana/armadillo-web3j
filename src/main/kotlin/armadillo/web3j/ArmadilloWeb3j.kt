@@ -10,7 +10,7 @@ import org.web3j.protocol.Web3j
 /**
  * ArmadilloWeb3j decorates the standard web3j library with failover capabilities.
  */
-class ArmadilloWeb3j {
+object ArmadilloWeb3j {
 
     fun build(services: List<Service>): Web3j {
         return ResilientWeb3JsonRpc(services)

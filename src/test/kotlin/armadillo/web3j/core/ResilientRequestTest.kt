@@ -11,7 +11,7 @@ internal class ResilientRequestTest {
     }
 
     @Test
-    fun itMustThrowClientConnectionExceptionWhenItHasExhaustedAllWeb3jInstances(){
+    fun itMustThrowClientConnectionExceptionWhenItHasTriedAllWeb3jInstances(){
         // TODO: Implement Test
     }
 

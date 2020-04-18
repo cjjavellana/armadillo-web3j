@@ -1,25 +1,29 @@
 package armadillo.web3j.core
 
-import io.reactivex.Flowable
-import org.web3j.protocol.Web3j
 import org.web3j.protocol.Web3jService
 import org.web3j.protocol.core.BatchRequest
 import org.web3j.protocol.core.DefaultBlockParameter
+import org.web3j.protocol.core.JsonRpc2_0Web3j
 import org.web3j.protocol.core.Request
-import org.web3j.protocol.core.methods.request.EthFilter
 import org.web3j.protocol.core.methods.request.ShhFilter
 import org.web3j.protocol.core.methods.request.ShhPost
 import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.*
 import org.web3j.protocol.core.methods.response.admin.AdminNodeInfo
 import org.web3j.protocol.core.methods.response.admin.AdminPeers
-import org.web3j.protocol.websocket.events.LogNotification
-import org.web3j.protocol.websocket.events.NewHeadsNotification
+import org.web3j.utils.Async
+import org.web3j.utils.Numeric
 import java.math.BigInteger
+import java.util.concurrent.ScheduledExecutorService
 
 class ResilientWeb3JsonRpc(
-        private val web3jServices: List<Web3jService>
-) : Web3j {
+        private val web3jServices: List<Web3jService>,
+        pollingInterval: Long,
+        scheduledExecutorService: ScheduledExecutorService
+) : JsonRpc2_0Web3j(web3jServices.first(), pollingInterval, scheduledExecutorService) {
+
+    constructor(web3jServices: List<Web3jService>) : this(web3jServices,
+            DEFAULT_BLOCK_TIME.toLong(), Async.defaultExecutorService())
 
     override fun web3ClientVersion(): Request<*, Web3ClientVersion> {
         return ResilientRequest(
@@ -42,28 +46,46 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethGetTransactionCount(address: String?, defaultBlockParameter: DefaultBlockParameter?): Request<*, EthGetTransactionCount> {
-        TODO("Not yet implemented")
+    override fun ethGetTransactionCount(address: String, defaultBlockParameter: DefaultBlockParameter): Request<*, EthGetTransactionCount> {
+        return ResilientRequest(
+                "eth_getTransactionCount",
+                listOf(address, defaultBlockParameter.value),
+                web3jServices,
+                EthGetTransactionCount::class.java
+        )
     }
 
     override fun ethGetTransactionReceipt(transactionHash: String?): Request<*, EthGetTransactionReceipt> {
-        TODO("Not yet implemented")
-    }
-
-    override fun replayPastAndFutureBlocksFlowable(startBlock: DefaultBlockParameter?, fullTransactionObjects: Boolean): Flowable<EthBlock> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "eth_getTransactionReceipt",
+                listOf(transactionHash),
+                web3jServices,
+                EthGetTransactionReceipt::class.java
+        )
     }
 
     override fun ethCompileSolidity(sourceCode: String?): Request<*, EthCompileSolidity> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "eth_compileSolidity",
+                listOf(sourceCode),
+                web3jServices,
+                EthCompileSolidity::class.java
+        )
     }
 
     override fun ethCoinbase(): Request<*, EthCoinbase> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "eth_coinbase", emptyList<String>(), web3jServices, EthCoinbase::class.java
+        )
     }
 
     override fun ethGetUncleCountByBlockNumber(defaultBlockParameter: DefaultBlockParameter?): Request<*, EthGetUncleCountByBlockNumber> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "eth_getUncleCountByBlockNumber",
+                listOf(defaultBlockParameter!!.value),
+                web3jServices,
+                EthGetUncleCountByBlockNumber::class.java
+        )
     }
 
     override fun ethGetTransactionByBlockHashAndIndex(blockHash: String?, transactionIndex: BigInteger?): Request<*, EthTransaction> {
@@ -71,14 +93,6 @@ class ResilientWeb3JsonRpc(
     }
 
     override fun dbGetString(databaseName: String?, keyName: String?): Request<*, DbGetString> {
-        TODO("Not yet implemented")
-    }
-
-    override fun ethLogFlowable(ethFilter: EthFilter?): Flowable<Log> {
-        TODO("Not yet implemented")
-    }
-
-    override fun logsNotifications(addresses: MutableList<String>?, topics: MutableList<String>?): Flowable<LogNotification> {
         TODO("Not yet implemented")
     }
 
@@ -111,30 +125,25 @@ class ResilientWeb3JsonRpc(
     }
 
     override fun ethCompileSerpent(sourceCode: String?): Request<*, EthCompileSerpent> {
-        TODO("Not yet implemented")
-    }
-
-    override fun blockFlowable(fullTransactionObjects: Boolean): Flowable<EthBlock> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "eth_compileSerpent",
+                listOf(sourceCode),
+                web3jServices,
+                EthCompileSerpent::class.java
+        )
     }
 
     override fun shhNewFilter(shhFilter: ShhFilter?): Request<*, ShhNewFilter> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "shh_newFilter", listOf(shhFilter), web3jServices, ShhNewFilter::class.java
+        )
     }
 
     override fun ethGetFilterLogs(filterId: BigInteger?): Request<*, EthLog> {
         TODO("Not yet implemented")
     }
 
-    override fun ethBlockHashFlowable(): Flowable<String> {
-        TODO("Not yet implemented")
-    }
-
     override fun ethGetUncleCountByBlockHash(blockHash: String?): Request<*, EthGetUncleCountByBlockHash> {
-        TODO("Not yet implemented")
-    }
-
-    override fun ethPendingTransactionHashFlowable(): Flowable<String> {
         TODO("Not yet implemented")
     }
 
@@ -147,11 +156,18 @@ class ResilientWeb3JsonRpc(
     }
 
     override fun ethNewBlockFilter(): Request<*, org.web3j.protocol.core.methods.response.EthFilter> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "eth_newBlockFilter",
+                emptyList<String>(),
+                web3jServices,
+                org.web3j.protocol.core.methods.response.EthFilter::class.java
+        )
     }
 
     override fun netVersion(): Request<*, NetVersion> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "net_version", emptyList<String>(), web3jServices, NetVersion::class.java
+        )
     }
 
     override fun netPeerCount(): Request<*, NetPeerCount> {
@@ -166,8 +182,13 @@ class ResilientWeb3JsonRpc(
         TODO("Not yet implemented")
     }
 
-    override fun ethNewFilter(ethFilter: EthFilter?): Request<*, org.web3j.protocol.core.methods.response.EthFilter> {
-        TODO("Not yet implemented")
+    override fun ethNewFilter(ethFilter: org.web3j.protocol.core.methods.request.EthFilter): Request<*, EthFilter> {
+        return ResilientRequest(
+                "eth_newFilter",
+                listOf(ethFilter),
+                web3jServices,
+                EthFilter::class.java
+        )
     }
 
     override fun shhPost(shhPost: ShhPost?): Request<*, org.web3j.protocol.core.methods.response.ShhPost> {
@@ -199,10 +220,6 @@ class ResilientWeb3JsonRpc(
     }
 
     override fun ethChainId(): Request<*, EthChainId> {
-        TODO("Not yet implemented")
-    }
-
-    override fun transactionFlowable(): Flowable<org.web3j.protocol.core.methods.response.Transaction> {
         TODO("Not yet implemented")
     }
 
@@ -238,22 +255,6 @@ class ResilientWeb3JsonRpc(
         TODO("Not yet implemented")
     }
 
-    override fun replayPastBlocksFlowable(startBlock: DefaultBlockParameter?, endBlock: DefaultBlockParameter?, fullTransactionObjects: Boolean): Flowable<EthBlock> {
-        TODO("Not yet implemented")
-    }
-
-    override fun replayPastBlocksFlowable(startBlock: DefaultBlockParameter?, endBlock: DefaultBlockParameter?, fullTransactionObjects: Boolean, ascending: Boolean): Flowable<EthBlock> {
-        TODO("Not yet implemented")
-    }
-
-    override fun replayPastBlocksFlowable(startBlock: DefaultBlockParameter?, fullTransactionObjects: Boolean, onCompleteFlowable: Flowable<EthBlock>?): Flowable<EthBlock> {
-        TODO("Not yet implemented")
-    }
-
-    override fun replayPastBlocksFlowable(startBlock: DefaultBlockParameter?, fullTransactionObjects: Boolean): Flowable<EthBlock> {
-        TODO("Not yet implemented")
-    }
-
     override fun ethHashrate(): Request<*, EthHashrate> {
         TODO("Not yet implemented")
     }
@@ -274,7 +275,7 @@ class ResilientWeb3JsonRpc(
         TODO("Not yet implemented")
     }
 
-    override fun ethGetLogs(ethFilter: EthFilter?): Request<*, EthLog> {
+    override fun ethGetLogs(ethFilter: org.web3j.protocol.core.methods.request.EthFilter): Request<*, EthLog> {
         TODO("Not yet implemented")
     }
 
@@ -283,10 +284,6 @@ class ResilientWeb3JsonRpc(
     }
 
     override fun ethGetCode(address: String?, defaultBlockParameter: DefaultBlockParameter?): Request<*, EthGetCode> {
-        TODO("Not yet implemented")
-    }
-
-    override fun pendingTransactionFlowable(): Flowable<org.web3j.protocol.core.methods.response.Transaction> {
         TODO("Not yet implemented")
     }
 
@@ -302,10 +299,6 @@ class ResilientWeb3JsonRpc(
         TODO("Not yet implemented")
     }
 
-    override fun newHeadsNotifications(): Flowable<NewHeadsNotification> {
-        TODO("Not yet implemented")
-    }
-
     override fun ethNewPendingTransactionFilter(): Request<*, org.web3j.protocol.core.methods.response.EthFilter> {
         TODO("Not yet implemented")
     }
@@ -314,12 +307,22 @@ class ResilientWeb3JsonRpc(
         TODO("Not yet implemented")
     }
 
-    override fun ethGetUncleByBlockHashAndIndex(blockHash: String?, transactionIndex: BigInteger?): Request<*, EthBlock> {
-        TODO("Not yet implemented")
+    override fun ethGetUncleByBlockHashAndIndex(blockHash: String, transactionIndex: BigInteger): Request<*, EthBlock> {
+        return ResilientRequest(
+                "eth_getUncleByBlockHashAndIndex",
+                listOf(blockHash, Numeric.encodeQuantity(transactionIndex)),
+                web3jServices,
+                EthBlock::class.java
+        )
     }
 
     override fun shhNewIdentity(): Request<*, ShhNewIdentity> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "shh_newIdentity",
+                emptyList<String>(),
+                web3jServices,
+                ShhNewIdentity::class.java
+        )
     }
 
     override fun shutdown() {
@@ -330,35 +333,38 @@ class ResilientWeb3JsonRpc(
         TODO("Not yet implemented")
     }
 
-    override fun replayPastTransactionsFlowable(startBlock: DefaultBlockParameter?, endBlock: DefaultBlockParameter?): Flowable<org.web3j.protocol.core.methods.response.Transaction> {
-        TODO("Not yet implemented")
-    }
-
-    override fun replayPastTransactionsFlowable(startBlock: DefaultBlockParameter?): Flowable<org.web3j.protocol.core.methods.response.Transaction> {
-        TODO("Not yet implemented")
-    }
-
     override fun ethMining(): Request<*, EthMining> {
         TODO("Not yet implemented")
     }
 
-    override fun ethGetUncleByBlockNumberAndIndex(defaultBlockParameter: DefaultBlockParameter?, transactionIndex: BigInteger?): Request<*, EthBlock> {
-        TODO("Not yet implemented")
+    override fun ethGetUncleByBlockNumberAndIndex(defaultBlockParameter: DefaultBlockParameter, uncleIndex: BigInteger): Request<*, EthBlock> {
+        return ResilientRequest(
+                "eth_getUncleByBlockNumberAndIndex",
+                listOf(defaultBlockParameter.value, Numeric.encodeQuantity(uncleIndex)),
+                web3jServices,
+                EthBlock::class.java
+        )
     }
 
     override fun adminPeers(): Request<*, AdminPeers> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "admin_peers", emptyList<Any>(), web3jServices, AdminPeers::class.java
+        )
     }
 
     override fun ethProtocolVersion(): Request<*, EthProtocolVersion> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "eth_protocolVersion",
+                emptyList<String>(),
+                web3jServices,
+                EthProtocolVersion::class.java
+        )
     }
 
     override fun dbGetHex(databaseName: String?, keyName: String?): Request<*, DbGetHex> {
-        TODO("Not yet implemented")
+        return ResilientRequest(
+                "db_getHex", listOf(databaseName, keyName), web3jServices, DbGetHex::class.java
+        )
     }
 
-    override fun replayPastAndFutureTransactionsFlowable(startBlock: DefaultBlockParameter?): Flowable<org.web3j.protocol.core.methods.response.Transaction> {
-        TODO("Not yet implemented")
-    }
 }

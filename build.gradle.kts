@@ -51,7 +51,7 @@ val sourcesJar by tasks.registering(Jar::class) {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            groupId = "io.github.cjjavellana"
+            groupId = "io.github.armadillo-web3j"
             artifactId = "armadillo-web3j"
             version = "1.0.0-SNAPSHOT"
 

@@ -42,3 +42,37 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            pom {
+                name.set("Armadillo Web3j")
+                description.set("Web3j With Resiliency Support")
+                url.set("https://github.com/cjjavellana/armadillo-web3j")
+
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("cjjavellana")
+                        name.set("Christian Javellana")
+                        email.set("cjjavellana@gmail.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com:cjjavellana/armadillo-web3j.git")
+                    developerConnection.set("scm:git:ssh://github.com:cjjavellana/armadillo-web3j.git")
+                    url.set("https://github.com/cjjavellana/armadillo-web3j")
+                }
+            }
+        }
+    }
+}
+

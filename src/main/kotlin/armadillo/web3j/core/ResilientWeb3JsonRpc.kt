@@ -15,7 +15,6 @@ import org.web3j.utils.Numeric
 import java.io.IOException
 import java.io.Serializable
 import java.math.BigInteger
-import java.util.*
 import java.util.concurrent.ScheduledExecutorService
 
 class ResilientWeb3JsonRpc(
@@ -36,7 +35,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun web3Sha3(data: String?): Request<*, Web3Sha3> {
+    override fun web3Sha3(data: String): Request<*, Web3Sha3> {
         return ResilientRequest(
                 "web3_sha3", listOf(data), web3jServices, Web3Sha3::class.java
         )
@@ -57,7 +56,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethGetTransactionReceipt(transactionHash: String?): Request<*, EthGetTransactionReceipt> {
+    override fun ethGetTransactionReceipt(transactionHash: String): Request<*, EthGetTransactionReceipt> {
         return ResilientRequest(
                 "eth_getTransactionReceipt",
                 listOf(transactionHash),
@@ -66,7 +65,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethCompileSolidity(sourceCode: String?): Request<*, EthCompileSolidity> {
+    override fun ethCompileSolidity(sourceCode: String): Request<*, EthCompileSolidity> {
         return ResilientRequest(
                 "eth_compileSolidity",
                 listOf(sourceCode),
@@ -81,16 +80,16 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethGetUncleCountByBlockNumber(defaultBlockParameter: DefaultBlockParameter?): Request<*, EthGetUncleCountByBlockNumber> {
+    override fun ethGetUncleCountByBlockNumber(defaultBlockParameter: DefaultBlockParameter): Request<*, EthGetUncleCountByBlockNumber> {
         return ResilientRequest(
                 "eth_getUncleCountByBlockNumber",
-                listOf(defaultBlockParameter!!.value),
+                listOf(defaultBlockParameter.value),
                 web3jServices,
                 EthGetUncleCountByBlockNumber::class.java
         )
     }
 
-    override fun ethGetTransactionByBlockHashAndIndex(blockHash: String?, transactionIndex: BigInteger?): Request<*, EthTransaction> {
+    override fun ethGetTransactionByBlockHashAndIndex(blockHash: String, transactionIndex: BigInteger): Request<*, EthTransaction> {
         return ResilientRequest(
                 "eth_getTransactionByBlockHashAndIndex",
                 listOf(blockHash, Numeric.encodeQuantity(transactionIndex)),
@@ -99,7 +98,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun dbGetString(databaseName: String?, keyName: String?): Request<*, DbGetString> {
+    override fun dbGetString(databaseName: String, keyName: String): Request<*, DbGetString> {
         return ResilientRequest(
                 "db_getString",
                 listOf(databaseName, keyName),
@@ -120,16 +119,16 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun shhAddToGroup(identityAddress: String?): Request<*, ShhAddToGroup> {
+    override fun shhAddToGroup(identityAddress: String): Request<*, ShhAddToGroup> {
         return ResilientRequest(
                 "shh_addToGroup",
-                Arrays.asList(identityAddress),
+                listOf(identityAddress),
                 web3jServices,
                 ShhAddToGroup::class.java
         )
     }
 
-    override fun ethGetFilterChanges(filterId: BigInteger?): Request<*, EthLog> {
+    override fun ethGetFilterChanges(filterId: BigInteger): Request<*, EthLog> {
         return ResilientRequest(
                 "eth_getFilterChanges",
                 listOf(Numeric.toHexStringWithPrefixSafe(filterId)),
@@ -138,7 +137,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun shhGetMessages(filterId: BigInteger?): Request<*, ShhMessages> {
+    override fun shhGetMessages(filterId: BigInteger): Request<*, ShhMessages> {
         return ResilientRequest(
                 "shh_getMessages",
                 listOf(Numeric.toHexStringWithPrefixSafe(filterId)),
@@ -153,7 +152,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun dbPutHex(databaseName: String?, keyName: String?, dataToStore: String?): Request<*, DbPutHex> {
+    override fun dbPutHex(databaseName: String, keyName: String, dataToStore: String): Request<*, DbPutHex> {
         return ResilientRequest(
                 "db_putHex",
                 listOf(databaseName, keyName, dataToStore),
@@ -162,7 +161,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethCompileSerpent(sourceCode: String?): Request<*, EthCompileSerpent> {
+    override fun ethCompileSerpent(sourceCode: String): Request<*, EthCompileSerpent> {
         return ResilientRequest(
                 "eth_compileSerpent",
                 listOf(sourceCode),
@@ -171,13 +170,13 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun shhNewFilter(shhFilter: ShhFilter?): Request<*, ShhNewFilter> {
+    override fun shhNewFilter(shhFilter: ShhFilter): Request<*, ShhNewFilter> {
         return ResilientRequest(
                 "shh_newFilter", listOf(shhFilter), web3jServices, ShhNewFilter::class.java
         )
     }
 
-    override fun ethGetFilterLogs(filterId: BigInteger?): Request<*, EthLog> {
+    override fun ethGetFilterLogs(filterId: BigInteger): Request<*, EthLog> {
         return ResilientRequest(
                 "eth_getFilterLogs",
                 listOf(Numeric.toHexStringWithPrefixSafe(filterId)),
@@ -186,7 +185,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethGetUncleCountByBlockHash(blockHash: String?): Request<*, EthGetUncleCountByBlockHash> {
+    override fun ethGetUncleCountByBlockHash(blockHash: String): Request<*, EthGetUncleCountByBlockHash> {
         return ResilientRequest(
                 "eth_getUncleCountByBlockHash",
                 listOf(blockHash),
@@ -195,7 +194,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun shhUninstallFilter(filterId: BigInteger?): Request<*, ShhUninstallFilter> {
+    override fun shhUninstallFilter(filterId: BigInteger): Request<*, ShhUninstallFilter> {
         return ResilientRequest(
                 "shh_uninstallFilter",
                 listOf(Numeric.toHexStringWithPrefixSafe(filterId)),
@@ -204,7 +203,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethGetBlockTransactionCountByHash(blockHash: String?): Request<*, EthGetBlockTransactionCountByHash> {
+    override fun ethGetBlockTransactionCountByHash(blockHash: String): Request<*, EthGetBlockTransactionCountByHash> {
         return ResilientRequest(
                 "eth_getBlockTransactionCountByHash",
                 listOf(blockHash),
@@ -261,7 +260,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun shhPost(shhPost: ShhPost?): Request<*, org.web3j.protocol.core.methods.response.ShhPost> {
+    override fun shhPost(shhPost: ShhPost): Request<*, org.web3j.protocol.core.methods.response.ShhPost> {
         return ResilientRequest(
                 "shh_post",
                 listOf(shhPost),
@@ -270,7 +269,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethSendTransaction(transaction: Transaction?): Request<*, EthSendTransaction> {
+    override fun ethSendTransaction(transaction: Transaction): Request<*, EthSendTransaction> {
         return ResilientRequest(
                 "eth_sendTransaction",
                 listOf(transaction),
@@ -285,7 +284,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethCall(transaction: Transaction?, defaultBlockParameter: DefaultBlockParameter?): Request<*, EthCall> {
+    override fun ethCall(transaction: Transaction, defaultBlockParameter: DefaultBlockParameter): Request<*, EthCall> {
         return ResilientRequest(
                 "eth_call",
                 listOf(transaction, defaultBlockParameter),
@@ -301,7 +300,7 @@ class ResilientWeb3JsonRpc(
                 EthBlockNumber::class.java)
     }
 
-    override fun ethSendRawTransaction(signedTransactionData: String?): Request<*, EthSendTransaction> {
+    override fun ethSendRawTransaction(signedTransactionData: String): Request<*, EthSendTransaction> {
         return ResilientRequest(
                 "eth_sendRawTransaction",
                 listOf(signedTransactionData),
@@ -316,7 +315,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun shhHasIdentity(identityAddress: String?): Request<*, ShhHasIdentity> {
+    override fun shhHasIdentity(identityAddress: String): Request<*, ShhHasIdentity> {
         return ResilientRequest(
                 "shh_hasIdentity",
                 listOf(identityAddress),
@@ -339,7 +338,7 @@ class ResilientWeb3JsonRpc(
                 EthGetCompilers::class.java)
     }
 
-    override fun ethUninstallFilter(filterId: BigInteger?): Request<*, EthUninstallFilter> {
+    override fun ethUninstallFilter(filterId: BigInteger): Request<*, EthUninstallFilter> {
         return ResilientRequest(
                 "eth_uninstallFilter",
                 listOf(Numeric.toHexStringWithPrefixSafe(filterId)),
@@ -352,7 +351,7 @@ class ResilientWeb3JsonRpc(
                 "eth_syncing", emptyList<String>(), web3jServices, EthSyncing::class.java)
     }
 
-    override fun ethEstimateGas(transaction: Transaction?): Request<*, EthEstimateGas> {
+    override fun ethEstimateGas(transaction: Transaction): Request<*, EthEstimateGas> {
         return ResilientRequest(
                 "eth_estimateGas", listOf(transaction), web3jServices, EthEstimateGas::class.java)
     }
@@ -362,7 +361,7 @@ class ResilientWeb3JsonRpc(
                 "shh_newGroup", emptyList<String>(), web3jServices, ShhNewGroup::class.java)
     }
 
-    override fun ethSubmitWork(nonce: String?, headerPowHash: String?, mixDigest: String?): Request<*, EthSubmitWork> {
+    override fun ethSubmitWork(nonce: String, headerPowHash: String, mixDigest: String): Request<*, EthSubmitWork> {
         return ResilientRequest(
                 "eth_submitWork",
                 listOf(nonce, headerPowHash, mixDigest),
@@ -375,7 +374,7 @@ class ResilientWeb3JsonRpc(
                 "eth_hashrate", emptyList<String>(), web3jServices, EthHashrate::class.java)
     }
 
-    override fun shhGetFilterChanges(filterId: BigInteger?): Request<*, ShhMessages> {
+    override fun shhGetFilterChanges(filterId: BigInteger): Request<*, ShhMessages> {
         return ResilientRequest(
                 "shh_getFilterChanges",
                 listOf(Numeric.toHexStringWithPrefixSafe(filterId)),
@@ -383,10 +382,10 @@ class ResilientWeb3JsonRpc(
                 ShhMessages::class.java)
     }
 
-    override fun ethGetBalance(address: String?, defaultBlockParameter: DefaultBlockParameter?): Request<*, EthGetBalance> {
+    override fun ethGetBalance(address: String, defaultBlockParameter: DefaultBlockParameter): Request<*, EthGetBalance> {
         return ResilientRequest(
                 "eth_getBalance",
-                Arrays.asList(address, defaultBlockParameter!!.value),
+                listOf(address, defaultBlockParameter.value),
                 web3jServices,
                 EthGetBalance::class.java)
     }
@@ -410,7 +409,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethGetBlockByHash(blockHash: String?, returnFullTransactionObjects: Boolean): Request<*, EthBlock> {
+    override fun ethGetBlockByHash(blockHash: String, returnFullTransactionObjects: Boolean): Request<*, EthBlock> {
         return ResilientRequest(
                 "eth_getBlockByHash",
                 listOf(blockHash, returnFullTransactionObjects),
@@ -419,16 +418,16 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethGetCode(address: String?, defaultBlockParameter: DefaultBlockParameter?): Request<*, EthGetCode> {
+    override fun ethGetCode(address: String, defaultBlockParameter: DefaultBlockParameter): Request<*, EthGetCode> {
         return ResilientRequest(
                 "eth_getCode",
-                listOf(address, defaultBlockParameter!!.value),
+                listOf(address, defaultBlockParameter.value),
                 web3jServices,
                 EthGetCode::class.java
         )
     }
 
-    override fun dbPutString(databaseName: String?, keyName: String?, stringToStore: String?): Request<*, DbPutString> {
+    override fun dbPutString(databaseName: String, keyName: String, stringToStore: String): Request<*, DbPutString> {
         return ResilientRequest(
                 "db_putString",
                 listOf(databaseName, keyName, stringToStore),
@@ -437,7 +436,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethCompileLLL(sourceCode: String?): Request<*, EthCompileLLL> {
+    override fun ethCompileLLL(sourceCode: String): Request<*, EthCompileLLL> {
         return ResilientRequest(
                 "eth_compileLLL", listOf(sourceCode), web3jServices, EthCompileLLL::class.java
         )
@@ -452,7 +451,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethNewPendingTransactionFilter(): Request<*, org.web3j.protocol.core.methods.response.EthFilter> {
+    override fun ethNewPendingTransactionFilter(): Request<*, EthFilter> {
         return ResilientRequest(
                 "eth_newPendingTransactionFilter",
                 emptyList<String>(),
@@ -461,11 +460,13 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun ethGetTransactionByBlockNumberAndIndex(defaultBlockParameter: DefaultBlockParameter?, transactionIndex: BigInteger?): Request<*, EthTransaction> {
+    override fun ethGetTransactionByBlockNumberAndIndex(defaultBlockParameter: DefaultBlockParameter, transactionIndex: BigInteger): Request<*, EthTransaction> {
         return ResilientRequest(
                 "eth_getTransactionByBlockNumberAndIndex",
                 listOf(
-                        defaultBlockParameter!!.value, Numeric.encodeQuantity(transactionIndex)),
+                        defaultBlockParameter.value,
+                        Numeric.encodeQuantity(transactionIndex)
+                ),
                 web3jServices,
                 EthTransaction::class.java
         )
@@ -500,13 +501,13 @@ class ResilientWeb3JsonRpc(
         }
     }
 
-    override fun ethGetStorageAt(address: String?, position: BigInteger?, defaultBlockParameter: DefaultBlockParameter?): Request<*, EthGetStorageAt> {
+    override fun ethGetStorageAt(address: String, position: BigInteger, defaultBlockParameter: DefaultBlockParameter): Request<*, EthGetStorageAt> {
         return ResilientRequest(
                 "eth_getStorageAt",
                 listOf(
                         address,
                         Numeric.encodeQuantity(position),
-                        defaultBlockParameter!!.value),
+                        defaultBlockParameter.value),
                 web3jServices,
                 EthGetStorageAt::class.java
         )
@@ -542,7 +543,7 @@ class ResilientWeb3JsonRpc(
         )
     }
 
-    override fun dbGetHex(databaseName: String?, keyName: String?): Request<*, DbGetHex> {
+    override fun dbGetHex(databaseName: String, keyName: String): Request<*, DbGetHex> {
         return ResilientRequest(
                 "db_getHex", listOf(databaseName, keyName), web3jServices, DbGetHex::class.java
         )

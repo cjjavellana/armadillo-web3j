@@ -15,3 +15,12 @@ miner.start(1);
 miner.stop();
 ```
 
+## Usage
+
+```kotlin
+ArmadilloWeb3j.build(listOf(
+    HttpService("http://node1:8545"),
+    HttpService("http://node2:8545"),
+    HttpService("http://node3:8545"),
+))
+```

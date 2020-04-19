@@ -43,6 +43,11 @@ tasks.test {
     useJUnitPlatform()
 }
 
+val sourcesJar by tasks.registering(Jar::class) {
+    classifier = "sources"
+    from(sourceSets.main.get().allSource)
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
@@ -51,6 +56,7 @@ publishing {
             version = "1.0.0-SNAPSHOT"
 
             from(components["java"])
+            artifact(sourcesJar.get())
 
             pom {
                 name.set("Armadillo Web3j")

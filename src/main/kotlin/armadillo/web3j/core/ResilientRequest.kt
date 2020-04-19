@@ -1,5 +1,6 @@
 package armadillo.web3j.core
 
+import org.slf4j.LoggerFactory
 import org.web3j.protocol.Web3jService
 import org.web3j.protocol.core.Request
 import org.web3j.protocol.core.Response
@@ -43,6 +44,8 @@ class ResilientRequest<S, T : Response<*>> constructor(
     private fun handleException(e: Exception) {
         when (e) {
             is IOException, is ClientConnectionException -> {
+                logger.warn("Unable to execute requested operation", e)
+
                 sleep(DEFAULT_RETRY_DELAY_MILLISECOND)
             }
             // This is not something that we are expecting.
@@ -53,5 +56,6 @@ class ResilientRequest<S, T : Response<*>> constructor(
 
     companion object {
         private const val DEFAULT_RETRY_DELAY_MILLISECOND = 100L
+        private val logger = LoggerFactory.getLogger(ResilientRequest::class.java)
     }
 }

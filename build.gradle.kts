@@ -43,11 +43,15 @@ tasks.test {
     useJUnitPlatform()
 }
 
-
-
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
+            groupId = "io.github.cjjavellana"
+            artifactId = "armadillo-web3j"
+            version = "1.0.0-SNAPSHOT"
+
+            from(components["java"])
+
             pom {
                 name.set("Armadillo Web3j")
                 description.set("Web3j With Resiliency Support")

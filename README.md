@@ -1,6 +1,6 @@
 # Armadillo Web3j
-Armadillo, spanish for 'little armored one' is designed to provide resiliency feature 
-over Ethereum's Web3j library. 
+Armadillo, spanish for 'little armored one' is designed to provide resiliency  
+over [Web3j](https://github.com/web3j/web3j). 
 
 ## Motivation
 The current web3j library can only connect to a single node. Should that node fail for whatever
